@@ -21,13 +21,13 @@ ChatBot::ChatBot()
 ChatBot::ChatBot(std::string filename)
 {
     std::cout << "ChatBot Constructor" << std::endl;
-    
+    _filename = filename;
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
 
     // load image into heap memory
-    _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
+    _image = new wxBitmap(_filename, wxBITMAP_TYPE_PNG);
 }
 
 ChatBot::~ChatBot()
@@ -45,6 +45,87 @@ ChatBot::~ChatBot()
 //// STUDENT CODE
 ////
 
+ChatBot::ChatBot(const ChatBot &source){ // Copy constructor
+  std::cout << "ChatBot copy constructor" << std::endl;
+  
+  //Owned
+  _filename = source._filename;
+  _image = new wxBitmap(source._filename, wxBITMAP_TYPE_PNG);
+  
+  // data handles (not owned)
+  _currentNode = source._currentNode;
+  _rootNode = source._rootNode;
+}
+
+//Defining operator overloading outside declaration.
+ChatBot &ChatBot::operator=(const ChatBot &source){ // Copy assignment
+  std::cout << "ChatBot copy assignment" << std::endl;
+  if(this==&source)
+    return *this;
+  
+  //Owned
+  if(_image != NULL)
+    delete _image;
+   
+  _filename = source._filename;
+  _image = new wxBitmap(source._filename, wxBITMAP_TYPE_PNG);
+  
+  // data handles (not owned)
+  _currentNode = source._currentNode;
+  _rootNode = source._rootNode;
+  
+  return *this;
+}
+
+ChatBot::ChatBot(ChatBot &&source){ // Move constructor
+  std::cout << "ChatBot move constructor" << std::endl;
+    
+  //Owned
+  _filename = source._filename;
+  _image = source._image;
+  source._image = NULL;
+  
+  _chatLogic = source._chatLogic;
+  _chatLogic->SetChatbotHandle(this);
+  
+  // data handles (not owned)
+  _currentNode = source._currentNode;
+  source._currentNode = nullptr;
+  
+  _rootNode = source._rootNode;
+  source._rootNode = nullptr;
+
+  source._chatLogic = nullptr;
+
+}
+
+//Defining operator overloading outside declaration.
+ChatBot &ChatBot::operator=(ChatBot &&source){ // Move assignment
+  std::cout << "ChatBot move assignment operator" << std::endl;
+  if(this==&source)
+    return *this;
+  
+  delete _image;
+  
+  //Owned
+  _filename = source._filename;
+  _image = new wxBitmap(source._filename, wxBITMAP_TYPE_PNG);
+  source._image = NULL;
+
+  // data handles (not owned)
+  _currentNode = source._currentNode;
+  source._currentNode = nullptr;
+
+  _rootNode = source._rootNode;
+  source._rootNode = nullptr;
+
+  _chatLogic = source._chatLogic;
+  _chatLogic->SetChatbotHandle(this);
+  source._chatLogic = nullptr;
+
+  
+  return *this;
+}
 ////
 //// EOF STUDENT CODE
 
