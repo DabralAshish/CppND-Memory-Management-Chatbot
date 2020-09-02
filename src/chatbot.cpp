@@ -51,7 +51,7 @@ ChatBot::ChatBot(const ChatBot &source){ // Copy constructor
   //Owned
   _filename = source._filename;
   _image = new wxBitmap(source._filename, wxBITMAP_TYPE_PNG);
-  
+  _chatLogic->SetChatbotHandle(this);
   // data handles (not owned)
   _currentNode = source._currentNode;
   _rootNode = source._rootNode;
@@ -73,6 +73,7 @@ ChatBot &ChatBot::operator=(const ChatBot &source){ // Copy assignment
   // data handles (not owned)
   _currentNode = source._currentNode;
   _rootNode = source._rootNode;
+  _chatLogic->SetChatbotHandle(this);
   
   return *this;
 }
